@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { CornerDownLeft } from 'lucide-svelte';
 </script>
 
 <div class="mt-20 box-border flex flex-col items-center justify-center overflow-hidden p-10">
@@ -9,23 +9,10 @@
 
 	<button
 		type="button"
-		onclick={() => goto('/')}
+		onclick={() => history.back()}
 		class="group mt-10 flex items-center justify-center gap-2 rounded-xl bg-zinc-200 px-5 py-2 text-[15px] transition-all hover:bg-indigo-700 hover:text-white"
 	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-			stroke-width="1.5"
-			stroke="currentColor"
-			class="size-5 stroke-zinc-600 transition-all group-hover:stroke-white"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-			/>
-		</svg>
+		<CornerDownLeft size={17} />
 
 		Geri qayıt</button
 	>

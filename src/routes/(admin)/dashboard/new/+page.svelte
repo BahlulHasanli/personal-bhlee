@@ -55,6 +55,7 @@
 			const textarea = document.querySelector(
 				`textarea[data-block-id="${newId}"]`
 			) as HTMLTextAreaElement;
+
 			if (textarea) {
 				textarea.focus();
 			}
@@ -134,11 +135,9 @@
 	};
 </script>
 
-<article class="pb-20">
+<article>
 	<!-- Header -->
-	<div
-		class="mx-auto mb-10 mt-5 flex items-center justify-between border-b px-6 pb-7 sm:max-w-[65ch]"
-	>
+	<div class="mx-auto mb-10 mt-10 flex items-center justify-between pb-5 sm:max-w-[65ch]">
 		<p class="text-[15px] text-zinc-500">{date}</p>
 
 		<div class="flex items-center gap-3">
@@ -166,7 +165,7 @@
 			type="text"
 			bind:value={title}
 			placeholder="Başlıq..."
-			class="w-full border-none bg-transparent text-[25px] font-semibold leading-8 tracking-tight outline-none focus:ring-0"
+			class="mb-5 w-full rounded-md border-none bg-transparent bg-white text-[25px] font-semibold leading-8 tracking-tight outline-none focus:ring-0"
 		/>
 	</div>
 
@@ -177,7 +176,7 @@
 				<div class="group relative">
 					<!-- Block Controls -->
 					<div class="absolute -left-16 top-0 opacity-0 transition-opacity group-hover:opacity-100">
-						<div class="flex flex-col gap-2 rounded-lg bg-white/50 p-1 backdrop-blur-sm">
+						<div class="flex flex-col gap-2 rounded-lg bg-white p-1 backdrop-blur-sm">
 							<button
 								type="button"
 								onclick={() => moveBlockUp(index)}
@@ -209,7 +208,7 @@
 						data-block-id={block.id}
 						bind:value={block.content}
 						placeholder="Məzmunu buraya yazın..."
-						class="w-full resize-none border-none bg-transparent text-[14px] tracking-tight outline-none focus:ring-0"
+						class="w-full resize border-none bg-transparent bg-white text-[14px] tracking-tight outline-none focus:ring-0"
 						rows="4"
 					></textarea>
 				</div>
@@ -235,11 +234,11 @@
 							<div
 								class="absolute left-4 top-4 opacity-0 transition-all duration-200 group-hover:opacity-100"
 							>
-								<div class="flex flex-col gap-2 rounded-xl bg-white/50 p-2 backdrop-blur-sm">
+								<div class="flex flex-col gap-2 rounded-xl bg-white p-2 backdrop-blur-sm">
 									<button
 										type="button"
 										onclick={() => moveBlockUp(index)}
-										class="rounded-lg bg-white/90 p-2 text-zinc-600 transition-all hover:bg-white"
+										class="rounded-md p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600"
 										disabled={index === 0}
 									>
 										<MoveUp size={16} />
@@ -247,7 +246,7 @@
 									<button
 										type="button"
 										onclick={() => moveBlockDown(index)}
-										class="rounded-lg bg-white/90 p-2 text-zinc-600 transition-all hover:bg-white"
+										class="rounded-md p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600"
 										disabled={index === contentBlocks.length - 1}
 									>
 										<MoveDown size={16} />
@@ -255,7 +254,7 @@
 									<button
 										type="button"
 										onclick={() => removeBlock(block.id)}
-										class="rounded-lg bg-white/90 p-2 text-red-500 transition-all hover:bg-white"
+										class="rounded-md p-2 text-red-400 transition-colors hover:bg-red-50 hover:text-red-600"
 									>
 										<Trash2 size={16} />
 									</button>
@@ -266,12 +265,12 @@
 				</div>
 
 				{#if block.imageUrl}
-					<div class="mx-auto -mt-6 px-6 sm:max-w-[65ch]">
+					<div class="mx-auto -mt-6 mb-5 px-6 sm:max-w-[65ch]">
 						<input
 							type="text"
 							bind:value={block.content}
 							placeholder="Şəkil haqqında məlumat..."
-							class="w-full border-none bg-transparent text-[12px] tracking-tight text-zinc-500 outline-none focus:ring-0"
+							class="w-full rounded-md border-none bg-transparent bg-white text-[12px] tracking-tight text-zinc-500 outline-none focus:ring-0"
 						/>
 					</div>
 				{/if}
