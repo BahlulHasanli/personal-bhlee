@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	%sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="hover"
+	class="text-default min-h-screen bg-zinc-100/50 pb-24 text-sm antialiased sm:text-base">
+	<div style="display: contents">%sveltekit.body%</div>
+</body>
+
+<script>
+	if ("paintWorklet" in CSS) {
+		CSS.paintWorklet.addModule(
+			"https://www.unpkg.com/css-houdini-squircle/squircle.min.js"
+		);
+	}
+</script>
+
+</html>
