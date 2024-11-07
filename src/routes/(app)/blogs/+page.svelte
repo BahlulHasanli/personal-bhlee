@@ -22,7 +22,7 @@
 
 				<div>
 					<a
-						href={'/blogs/alan-wake-2'}
+						href={'/blogs/first-post'}
 						class="underline decoration-wavy transition-all hover:text-indigo-500"
 					>
 						<h1 class="font-bold leading-7 tracking-tighter">
@@ -53,7 +53,7 @@
 
 				<div>
 					<a
-						href={'/blogs/alan-wake-2'}
+						href={'/blogs/first-post'}
 						class="underline decoration-wavy transition-all hover:text-indigo-500"
 					>
 						<h1 class="font-bold leading-7 tracking-tighter">

@@ -1,7 +1,21 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Image as ImageIcon, MoveDown, MoveUp, Save, Trash2, Type } from 'lucide-svelte';
+	import { Image as ImageIcon, Link, MoveDown, MoveUp, Save, Trash2, Type } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+
+	// Types
+	interface ContentBlock {
+		id: string;
+		type: 'text' | 'bigImage' | 'smallImage';
+		content: string;
+		imageUrl?: string;
+	}
+
+	interface BlogPost {
+		title: string;
+		date: string;
+		blocks: ContentBlock[];
+	}
 
 	interface ContentBlock {
 		id: string;
@@ -14,15 +28,49 @@
 	// State variables
 	let title = '';
 
-	let contentBlocks: ContentBlock[] = [];
+	let urlImageError = false;
+	let urlImageLoaded = false;
+	let imageUrl = '';
 
-	let showImageModal = false;
+	let showImageModal = false; // İlk modal (seçim)
+	let showUploadModal = false; // URL yükleme modalı
+	let showSizeModal = false; // Boyut seçim modalı
+	let uploadType: 'file' | 'url' = 'file';
+
+	// URL doğrulama fonksiyonu
+	const isValidImageUrl = (url: string) => {
+		try {
+			const parsedUrl = new URL(url);
+			const pathname = parsedUrl.pathname.toLowerCase();
+			const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+
+			// URL'in path kısmında herhangi bir noktada resim uzantısı var mı kontrol et
+			return imageExtensions.some((ext) => pathname.includes(ext));
+		} catch {
+			return false;
+		}
+	};
+
+	// URL input handler
+	const handleUrlInput = (event: Event) => {
+		const input = event.target as HTMLInputElement;
+		imageUrl = input.value.trim(); // Başındaki ve sonundaki boşlukları temizle
+		urlImageError = false;
+		urlImageLoaded = false;
+
+		if (imageUrl && !isValidImageUrl(imageUrl)) {
+			urlImageError = true;
+		}
+	};
+
+	let contentBlocks: ContentBlock[] = [];
 
 	let previewImage: string | null = null;
 
 	let selectedFile: File | null = null;
 
-	let titleInput: HTMLInputElement;
+	let titleInput: HTMLDivElement;
+	let contentEditableDIV: HTMLDivElement;
 
 	let imageInput: HTMLInputElement;
 
@@ -32,7 +80,6 @@
 		year: 'numeric'
 	});
 
-	// Focus title input on first load
 	onMount(() => {
 		if (titleInput) {
 			titleInput.focus();
@@ -50,16 +97,23 @@
 			}
 		];
 
-		// Focus on the new textarea after render
 		setTimeout(() => {
-			const textarea = document.querySelector(
-				`textarea[data-block-id="${newId}"]`
-			) as HTMLTextAreaElement;
+			const contentEditableDIV = document.querySelector(
+				`div[data-block-id="${newId}"]`
+			) as HTMLDivElement;
 
-			if (textarea) {
-				textarea.focus();
+			if (contentEditableDIV) {
+				contentEditableDIV.focus();
 			}
 		}, 0);
+	};
+
+	const handleContentUpdate = (event: Event, blockId: string) => {
+		const div = event.target as HTMLDivElement;
+
+		contentBlocks = contentBlocks.map((block) =>
+			block.id === blockId ? { ...block, content: div.innerHTML } : block
+		);
 	};
 
 	const handleImageModalOpen = (e: Event) => {
@@ -71,25 +125,14 @@
 			reader.onload = (e) => {
 				if (e.target?.result) {
 					previewImage = e.target.result as string;
-					showImageModal = true;
 				}
 			};
 			reader.readAsDataURL(file);
 		}
 	};
 
-	const closeImageModal = () => {
-		showImageModal = false;
-		previewImage = null;
-		selectedFile = null;
-
-		if (imageInput) {
-			imageInput.value = ''; // Reset input value
-		}
-	};
-
 	const addImageBlock = (type: 'bigImage' | 'smallImage') => {
-		if (previewImage) {
+		if (uploadType === 'file' && previewImage) {
 			contentBlocks = [
 				...contentBlocks,
 				{
@@ -100,8 +143,35 @@
 					isLoading: false
 				}
 			];
+		} else if (uploadType === 'url' && imageUrl && urlImageLoaded) {
+			contentBlocks = [
+				...contentBlocks,
+				{
+					id: crypto.randomUUID(),
+					type,
+					content: '',
+					imageUrl: imageUrl,
+					isLoading: false
+				}
+			];
+		}
 
-			closeImageModal();
+		closeImageModal();
+	};
+
+	const closeImageModal = () => {
+		showImageModal = false;
+		showUploadModal = false;
+		showSizeModal = false;
+		previewImage = null;
+		selectedFile = null;
+		imageUrl = '';
+		urlImageLoaded = false;
+		urlImageError = false;
+		uploadType = 'file';
+
+		if (imageInput) {
+			imageInput.value = '';
 		}
 	};
 
@@ -131,6 +201,7 @@
 			date,
 			blocks: contentBlocks
 		});
+
 		goto('/blogs');
 	};
 </script>
@@ -159,24 +230,29 @@
 	</div>
 
 	<!-- Title Input -->
-	<div class="mx-auto px-6 sm:max-w-[65ch]">
-		<input
+	<div class="mx-auto sm:max-w-[65ch]">
+		<div
 			bind:this={titleInput}
-			type="text"
-			bind:value={title}
+			contenteditable="true"
+			role="textbox"
+			aria-label="Başlık"
+			bind:innerHTML={title}
 			placeholder="Başlıq..."
-			class="mb-5 w-full rounded-md border-none bg-transparent bg-white text-[25px] font-semibold leading-8 tracking-tight outline-none focus:ring-0"
-		/>
+			oninput={(e: any) => (title = e.target.innerHTML)}
+			class="mb-5 w-full rounded-md border-none bg-transparent bg-white p-3 text-[25px] font-semibold leading-8 tracking-tight outline-none empty:before:text-zinc-400 empty:before:content-[attr(placeholder)] focus:ring-0"
+		></div>
 	</div>
 
 	<!-- Dynamic Content Blocks -->
 	{#each contentBlocks as block, index}
 		{#if block.type === 'text'}
-			<div class="mx-auto px-6 sm:max-w-[65ch]">
+			<div class="mx-auto sm:max-w-[65ch]">
+				<!-- Panel ve text block arasındaki boşluğu kapsayacak bir wrapper -->
 				<div class="group relative">
-					<!-- Block Controls -->
-					<div class="absolute -left-16 top-0 opacity-0 transition-opacity group-hover:opacity-100">
-						<div class="flex flex-col gap-2 rounded-lg bg-white p-1 backdrop-blur-sm">
+					<div
+						class="absolute -left-16 top-0 z-20 h-full w-[calc(100%+64px)] opacity-0 transition-opacity group-hover:opacity-100"
+					>
+						<div class="absolute flex flex-col gap-2 rounded-lg bg-white p-1 backdrop-blur-sm">
 							<button
 								type="button"
 								onclick={() => moveBlockUp(index)}
@@ -204,13 +280,19 @@
 					</div>
 
 					<!-- Text Block -->
-					<textarea
+					<div
 						data-block-id={block.id}
-						bind:value={block.content}
+						contenteditable="true"
+						role="textbox"
+						aria-label="Mətn"
 						placeholder="Məzmunu buraya yazın..."
-						class="w-full resize border-none bg-transparent bg-white text-[14px] tracking-tight outline-none focus:ring-0"
-						rows="4"
-					></textarea>
+						oninput={(e: any) => {
+							contentBlocks = contentBlocks.map((b) =>
+								b.id === block.id ? { ...b, content: e.target.innerHTML } : b
+							);
+						}}
+						class="relative z-30 mb-5 w-full rounded-md border-none bg-transparent bg-white p-3 text-[14px] tracking-tight outline-none empty:before:text-zinc-400 empty:before:content-[attr(placeholder)] focus:ring-0"
+					></div>
 				</div>
 			</div>
 		{:else if block.type === 'bigImage'}
@@ -270,17 +352,18 @@
 							type="text"
 							bind:value={block.content}
 							placeholder="Şəkil haqqında məlumat..."
-							class="w-full rounded-md border-none bg-transparent bg-white text-[12px] tracking-tight text-zinc-500 outline-none focus:ring-0"
+							class="w-full rounded-md border-none bg-transparent text-[12px] tracking-tight text-zinc-500 outline-none focus:ring-0"
 						/>
 					</div>
 				{/if}
 			</div>
 		{:else if block.type === 'smallImage'}
-			<div class="mx-auto px-6 sm:max-w-[65ch]">
+			<div class="mx-auto sm:max-w-[65ch]">
 				<div class="group relative">
-					<!-- Block Controls -->
-					<div class="absolute -left-16 top-0 opacity-0 transition-opacity group-hover:opacity-100">
-						<div class="flex flex-col gap-2 rounded-lg bg-white/50 p-1 backdrop-blur-sm">
+					<div
+						class="absolute -left-16 top-0 z-20 h-full w-[calc(100%+64px)] opacity-0 transition-opacity group-hover:opacity-100"
+					>
+						<div class="absolute flex flex-col gap-2 rounded-lg bg-white p-1 backdrop-blur-sm">
 							<button
 								type="button"
 								onclick={() => moveBlockUp(index)}
@@ -307,7 +390,6 @@
 						</div>
 					</div>
 
-					<!-- Small Image Block -->
 					<div class="overflow-hidden bg-zinc-100">
 						{#if block.isLoading}
 							<div class="flex h-48 w-full items-center justify-center">
@@ -333,7 +415,7 @@
 		{/if}
 	{/each}
 
-	<!-- Fixed Add Block Panel -->
+	<!-- Editor panel -->
 	<div class="fixed right-10 top-1/2 z-40 -translate-y-1/2">
 		<div class="flex flex-col gap-3 rounded-2xl bg-white/80 p-3 shadow-lg backdrop-blur-sm">
 			<button
@@ -344,56 +426,161 @@
 				<Type size={16} />
 				Mətn əlavə et
 			</button>
-			<label
-				class="flex cursor-pointer items-center gap-2 rounded-xl bg-zinc-100/80 px-4 py-2.5 text-[14px] transition-all hover:bg-zinc-200"
+			<button
+				type="button"
+				class="flex items-center gap-2 rounded-xl bg-zinc-100/80 px-4 py-2.5 text-[14px] transition-all hover:bg-zinc-200"
+				onclick={() => (showImageModal = true)}
+				onkeydown={(e) => e.key === 'Enter' && (showImageModal = true)}
 			>
 				<ImageIcon size={16} />
 				Şəkil əlavə et
-				<input
-					bind:this={imageInput}
-					type="file"
-					class="hidden"
-					accept="image/*"
-					onchange={handleImageModalOpen}
-				/>
-			</label>
+			</button>
 		</div>
 	</div>
 
-	<!-- Image Upload Modal -->
+	<!-- Şəkil yükləmə tipinin modalı -->
 	{#if showImageModal}
 		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-			<div class="mx-4 w-full max-w-2xl rounded-2xl bg-white p-6">
-				<h3 class="mb-4 text-lg font-medium">Şəkil tipi seçin</h3>
+			<div class="mx-4 w-full max-w-md rounded-2xl bg-white p-6">
+				<h3 class="mb-6 text-center text-lg font-medium">Şəkil əlavə et</h3>
 
-				<!-- Image Preview -->
-				<div class="relative mb-6 overflow-hidden rounded-xl bg-zinc-100">
-					{#if previewImage}
-						<img src={previewImage} alt="Preview" class="h-64 w-full object-cover" />
+				<div class="flex flex-col gap-4">
+					<label
+						class="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-zinc-100 px-6 py-4 text-[14px] transition-all hover:bg-zinc-200"
+					>
+						<ImageIcon size={18} />
+						Fayldan yüklə
+						<input
+							bind:this={imageInput}
+							type="file"
+							class="hidden"
+							accept="image/*"
+							onchange={(e) => {
+								uploadType = 'file';
+
+								handleImageModalOpen(e);
+
+								showImageModal = false;
+								showSizeModal = true;
+							}}
+						/>
+					</label>
+
+					<button
+						class="flex items-center justify-center gap-2 rounded-xl bg-zinc-100 px-6 py-4 text-[14px] transition-all hover:bg-zinc-200"
+						onclick={() => {
+							uploadType = 'url';
+							showUploadModal = true;
+							showImageModal = false;
+						}}
+					>
+						<Link size={18} />
+						URL-dən yüklə
+					</button>
+
+					<button
+						class="mt-2 rounded-xl bg-indigo-100 px-4 py-2 text-[14px] text-indigo-500 transition-all hover:bg-indigo-200"
+						onclick={closeImageModal}
+					>
+						İmtina
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	<!-- URL-dən şəkil yükləmə modalı -->
+	{#if showUploadModal}
+		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+			<div class="mx-4 w-full max-w-2xl rounded-2xl bg-white p-6">
+				<div class="mb-6">
+					<input
+						type="url"
+						bind:value={imageUrl}
+						placeholder="Şəkil URL-ni daxil edin..."
+						class="w-full rounded-xl border {urlImageError && imageUrl
+							? 'border-red-500'
+							: 'border-zinc-200'} px-4 py-2 text-[14px] outline-none focus:border-indigo-600"
+						oninput={handleUrlInput}
+					/>
+
+					{#if imageUrl && !urlImageError}
+						<div class="mt-4 overflow-hidden rounded-xl bg-zinc-100">
+							<img
+								src={imageUrl}
+								alt="URL Preview"
+								class="h-64 w-full object-cover"
+								onload={() => {
+									urlImageLoaded = true;
+									showUploadModal = false;
+									showSizeModal = true;
+								}}
+								onerror={() => {
+									urlImageError = true;
+									urlImageLoaded = false;
+								}}
+							/>
+						</div>
+					{/if}
+
+					{#if urlImageError && imageUrl}
+						<p class="mt-2 text-[14px] text-red-500">
+							Şəkil yüklənmədi. Düzgün şəkil URL-i daxil edin.
+						</p>
 					{/if}
 				</div>
 
-				<!-- Type Selection -->
 				<div class="flex justify-end gap-4">
 					<button
 						type="button"
 						onclick={closeImageModal}
-						class="rounded-xl bg-zinc-100 px-4 py-2 text-[14px] transition-colors hover:bg-zinc-200"
+						class="rounded-xl bg-indigo-100 px-4 py-2 text-[14px] text-indigo-500 transition-colors hover:bg-indigo-200"
+					>
+						İmtina
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	<!-- Ölçü seçimi modalı -->
+	{#if showSizeModal && (previewImage || (imageUrl && urlImageLoaded))}
+		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+			<div class="mx-4 w-full max-w-2xl rounded-2xl bg-white p-6">
+				<!-- Şəkil preview -->
+				<div class="mb-6">
+					<div class="relative overflow-hidden rounded-xl bg-zinc-100">
+						<img
+							src={uploadType === 'file' ? previewImage : imageUrl}
+							alt="Preview"
+							class="h-64 w-full object-cover"
+						/>
+					</div>
+				</div>
+
+				<!-- Ölçü seçimi buttonları -->
+				<div class="flex justify-end gap-4">
+					<button
+						type="button"
+						onclick={closeImageModal}
+						class="rounded-xl bg-indigo-100 px-4 py-2 text-[14px] text-indigo-500 transition-colors hover:bg-indigo-200"
 					>
 						İmtina
 					</button>
 					<button
 						type="button"
 						onclick={() => addImageBlock('smallImage')}
-						class="rounded-xl bg-zinc-100 px-4 py-2 text-[14px] transition-colors hover:bg-zinc-200"
+						class="flex items-center gap-2 rounded-xl bg-zinc-100 px-4 py-2 text-[14px] transition-colors hover:bg-zinc-200"
 					>
+						<ImageIcon size={16} />
 						Kiçik şəkil
 					</button>
 					<button
 						type="button"
 						onclick={() => addImageBlock('bigImage')}
-						class="rounded-xl bg-indigo-600 px-4 py-2 text-[14px] text-white transition-colors hover:bg-indigo-700"
+						class="flex items-center gap-2 rounded-xl bg-zinc-100 px-4 py-2 text-[14px] transition-colors hover:bg-zinc-200"
 					>
+						<ImageIcon size={16} />
 						Böyük şəkil
 					</button>
 				</div>
