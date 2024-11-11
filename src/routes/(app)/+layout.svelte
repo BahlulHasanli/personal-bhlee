@@ -83,7 +83,7 @@
 		<a
 			href="https://svelte.dev"
 			target="_blank"
-			class="underline decoration-wavy hover:text-indigo-500">SvelteKit</a
+			class="underline decoration-wavy transition-all hover:text-indigo-500">SvelteKit</a
 		>
 	</div>
 </footer>

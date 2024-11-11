@@ -1,72 +1,39 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-
-	const handleClick = () => {
-		goto('/blogs/2');
-	};
+	const { data } = $props();
 </script>
 
 <div class="mx-auto px-6 sm:max-w-[65ch]">
 	<div class="space-y-8">
-		<article
-			class="rounded-3xl border border-transparent bg-white p-5 transition-all hover:border-zinc-200"
-		>
-			<div class="grid grid-cols-2 gap-6">
-				<div class="h-[250px] !w-[250px] overflow-hidden rounded-3xl bg-slate-400">
-					<img
-						src="https://platform.polygon.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25032568/AW2_10_08_23_002.jpg?quality=90&strip=all&crop=7.8125%2C0%2C84.375%2C100&w=1200"
-						alt="alan-wake-2"
-						class="h-full w-full object-cover object-top"
-					/>
+		{#each data.posts.posts as post}
+			<article
+				class="rounded-3xl border border-transparent bg-white p-5 transition-all hover:border-zinc-200"
+			>
+				<div class="grid grid-cols-2 gap-6">
+					<div class="h-[250px] !w-[250px] overflow-hidden rounded-3xl bg-slate-400">
+						<img
+							src="https://platform.polygon.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25032568/AW2_10_08_23_002.jpg?quality=90&strip=all&crop=7.8125%2C0%2C84.375%2C100&w=1200"
+							alt="alan-wake-2"
+							class="h-full w-full object-cover object-top"
+						/>
+					</div>
+
+					<div>
+						<a
+							href={`/blogs/${post.slug}`}
+							class="underline decoration-wavy transition-all hover:text-indigo-500"
+						>
+							<h1 class="font-bold leading-7 tracking-tighter">
+								{post.title}
+							</h1>
+						</a>
+
+						<p class="mt-3 text-[13px] tracking-tight">
+							{post.description}
+						</p>
+					</div>
 				</div>
-
-				<div>
-					<a
-						href={'/blogs/first-post'}
-						class="underline decoration-wavy transition-all hover:text-indigo-500"
-					>
-						<h1 class="font-bold leading-7 tracking-tighter">
-							Alan Wake 2 is worth every minute of the 13-year wait
-						</h1>
-					</a>
-
-					<p class="mt-3 text-[13px] tracking-tight">
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Blanditiis, voluptas ut
-						incidunt, illum dignissimos vero enim soluta odio molestias assumenda, accusamus
-						voluptate pariatur.
-					</p>
-				</div>
-			</div>
-		</article>
-
-		<article
-			class="rounded-3xl border border-transparent bg-white p-5 transition-all hover:border-zinc-200"
-		>
-			<div class="grid grid-cols-2 gap-6">
-				<div class="h-[250px] !w-[250px] overflow-hidden rounded-3xl bg-slate-400">
-					<img
-						src="https://platform.polygon.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/12162913/the_order_1886_screen_01_ps4_us_12aug14.jpg?quality=90&strip=all&crop=16.875%2C0%2C62.578125%2C100&w=1200"
-						alt="the-order-1886"
-						class="h-full w-full object-cover object-top"
-					/>
-				</div>
-
-				<div>
-					<a
-						href={'/blogs/first-post'}
-						class="underline decoration-wavy transition-all hover:text-indigo-500"
-					>
-						<h1 class="font-bold leading-7 tracking-tighter">
-							The Order: 1886 review: London calling
-						</h1>
-					</a>
-
-					<p class="mt-3 text-[13px] tracking-tight">
-						"The knights of The Order aren't the same that once sat around Arthur's Round Table"
-					</p>
-				</div>
-			</div>
-		</article>
+			</article>
+		{/each}
 
 		<div class="flex items-center justify-center">
 			<button
