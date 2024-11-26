@@ -18,7 +18,7 @@
 	</div>
 
 	<div class="mx-auto px-6 sm:max-w-[65ch]">
-		<h1 class="text-[25px] font-semibold leading-8 tracking-tight">
+		<h1 class="zilla-slab-semibold text-[32px] leading-8 tracking-tight">
 			{title}
 		</h1>
 	</div>

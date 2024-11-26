@@ -19,7 +19,7 @@
 			</div>
 			<header>
 				<h1 class="font-semibold">Bahlul Hasanli</h1>
-				<h2 class="font-semibold">
+				<h2 class="text-zinc-500">
 					Software Developer at <a
 						href="https://xalqbank.az"
 						class="underline decoration-wavy transition-all hover:text-indigo-500"
@@ -30,11 +30,11 @@
 				<h2 class="text-zinc-500">Baku, Azerbaijan</h2>
 			</header>
 		</div>
-		<p>
+		<p class="text-zinc-800">
 			Kod yazarkən musiqi dinləməyi sevən sadə biri.
 			<br /><br />
 			Əvvəllər hər hansı bir proyektə başlarkən,
-			<span class="jetbrains-mono-italic">"Daha ideal necə görünər?"</span>
+			<span class="inter-mono-italic">"Daha ideal necə görünər?"</span>
 			deyə düşünərdim. Nəticədə günümün yarısını proyektin mükəmməl görünməsi üçün sərf etdiyimi fərq
 			edirdim.
 			<br /><br />

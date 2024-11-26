@@ -1,8 +1,8 @@
 ---
 title: Alan Wake 2 is worth every minute of the 13-year wait
-description: 'hello world'
-date: '2024-11-04'
+date: '2024-11-04 11:43'
 published: true
+category: 'Tech'
 ---
 
 <!-- Big screen image -->

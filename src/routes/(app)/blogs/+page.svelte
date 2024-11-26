@@ -1,39 +1,62 @@
 <script lang="ts">
+	import { timeAgo } from '$lib/utils';
+
 	const { data } = $props();
+
+	$inspect(data);
 </script>
 
 <div class="mx-auto px-6 sm:max-w-[65ch]">
 	<div class="space-y-8">
-		{#each data.posts.posts as post}
-			<article
-				class="rounded-3xl border border-transparent bg-white p-5 transition-all hover:border-zinc-200"
-			>
-				<div class="grid grid-cols-2 gap-6">
-					<div class="h-[250px] !w-[250px] overflow-hidden rounded-3xl bg-slate-400">
-						<img
-							src="https://platform.polygon.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25032568/AW2_10_08_23_002.jpg?quality=90&strip=all&crop=7.8125%2C0%2C84.375%2C100&w=1200"
-							alt="alan-wake-2"
-							class="h-full w-full object-cover object-top"
-						/>
-					</div>
+		<ul
+			class="flex gap-2 *:cursor-pointer *:rounded-xl *:bg-zinc-200 *:px-4 *:py-2 *:text-[16px] *:text-zinc-500"
+		>
+			<li class="!bg-zinc-900 !text-white">Qarışıq</li>
+			<li class="transition-all hover:bg-zinc-900 hover:text-white">Oyunlar</li>
+			<li class="transition-all hover:bg-zinc-900 hover:text-white">Filmlər</li>
+		</ul>
 
-					<div>
-						<a
-							href={`/blogs/${post.slug}`}
-							class="underline decoration-wavy transition-all hover:text-indigo-500"
-						>
-							<h1 class="font-bold leading-7 tracking-tighter">
-								{post.title}
-							</h1>
-						</a>
+		{#if data?.isSuccess}
+			{#each data.posts as post}
+				<article
+					class="flex items-center gap-6 rounded-xl bg-white px-4 py-3 shadow-sm sm:px-6 sm:py-6"
+				>
+					<div class="grid grid-cols-2 gap-6">
+						<div class="h-[100px] !w-[250px] overflow-hidden rounded-2xl bg-slate-400">
+							<img
+								src="https://platform.polygon.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25032568/AW2_10_08_23_002.jpg?quality=90&strip=all&crop=7.8125%2C0%2C84.375%2C100&w=1200"
+								alt="alan-wake-2"
+								class="h-full w-full object-cover object-top"
+							/>
+						</div>
 
-						<p class="mt-3 text-[13px] tracking-tight">
-							{post.description}
-						</p>
+						<div class="flex flex-col justify-between">
+							<a
+								href={`/blogs/${post.slug}`}
+								class=" text-zinc-700 underline decoration-wavy transition-all hover:text-indigo-500"
+							>
+								<h1 class="inter-mono-semibold leading-7 tracking-tighter">
+									{post.title}
+								</h1>
+							</a>
+
+							<div
+								class="inter-mono-medium mt-3 flex items-end justify-between text-[13px] text-zinc-400"
+							>
+								<p class="text-indigo-500">{post.category}</p>
+								<p>
+									{timeAgo(new Date(post.date))}
+								</p>
+							</div>
+						</div>
 					</div>
-				</div>
-			</article>
-		{/each}
+				</article>
+			{/each}
+		{:else}
+			<div class="text-center">
+				<p class="text-[15px] text-zinc-500">Yazı tapılmadı</p>
+			</div>
+		{/if}
 
 		<div class="flex items-center justify-center">
 			<button

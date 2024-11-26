@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-
 	import '../../app.css';
 
 	let { children } = $props();
@@ -21,13 +20,13 @@
 		}
 	});
 
-	const copyRight = `Bahlul Hasanli ${String.fromCharCode(169)} ${new Date().getFullYear()}`;
+	const copyRight: string = `Bahlul Hasanli ${String.fromCharCode(169)} ${new Date().getFullYear()}`;
 </script>
 
 <header>
 	<div class="mb-5 flex h-[45px] items-center justify-center border-b bg-white">
-		<div class="jetbrains-mono-semibold">hasan</div>
-		<div class="jetbrains-mono-italic">lee</div>
+		<div class="inter-mono-semibold">hasan</div>
+		<div class="inter-mono-italic">lee</div>
 	</div>
 
 	<div class="mx-auto px-6 sm:max-w-[65ch]">
@@ -35,35 +34,28 @@
 			<a
 				href="/"
 				onclick={() => changeRoute('/')}
-				class={`jetbrains-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
+				class={`inter-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
 					activeRoute === '/' ? 'text-indigo-600' : ''
 				}`}>Haqqımda</a
 			>
 			<a
 				href="/blogs"
 				onclick={() => changeRoute('/blogs')}
-				class={`jetbrains-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
+				class={`inter-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
 					activeRoute === '/blogs' ? 'text-indigo-600' : ''
 				}`}>Bloglarım</a
 			>
 			<a
 				href="/projects"
 				onclick={() => changeRoute('/projects')}
-				class={`jetbrains-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
+				class={`inter-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
 					activeRoute === '/projects' ? 'text-indigo-600' : ''
 				}`}>İşlərim</a
 			>
 			<a
-				href="/movies"
-				onclick={() => changeRoute('/movies')}
-				class={`jetbrains-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
-					activeRoute === '/movies' ? 'text-indigo-600' : ''
-				}`}>İzlədiyim_filmlər</a
-			>
-			<a
 				href="/links"
 				onclick={() => changeRoute('/links')}
-				class={`jetbrains-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
+				class={`inter-mono-regular text-gray-600 transition-all hover:text-indigo-600 ${
 					activeRoute === '/links' ? 'text-indigo-600' : ''
 				}`}>Linklərim</a
 			>

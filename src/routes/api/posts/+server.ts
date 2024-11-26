@@ -4,8 +4,16 @@ import fs from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
+interface Post {
+	title: string;
+	date: string;
+	category: string;
+	slug: string;
+	published: boolean;
+}
+
 async function getPosts() {
-	let posts: any[] = [];
+	let posts: Post[] = [];
 
 	const paths = import.meta.glob('/src/posts/*.md', { eager: true });
 
@@ -14,14 +22,14 @@ async function getPosts() {
 		const slug = path.split('/').at(-1)?.replace('.md', '');
 
 		if (file && typeof file === 'object' && 'metadata' in file && slug) {
-			const metadata: any = file.metadata;
+			const metadata = file.metadata as Omit<Post, 'slug'>;
 			const post = { ...metadata, slug };
-			console.log(post);
 
 			post.published && posts.push(post);
 		}
 	}
 
+	// Tarixə görə sırala
 	posts = posts.sort(
 		(first, second) => new Date(second.date).getTime() - new Date(first.date).getTime()
 	);
@@ -29,22 +37,31 @@ async function getPosts() {
 	return posts;
 }
 
-export async function GET() {
-	const posts: any = await getPosts();
+export async function GET({ url }) {
+	try {
+		const category = url.searchParams.get('category');
 
-	console.log(posts);
+		if (category) {
+			const posts = await getPosts();
+			const filteredPosts = posts.filter((post) => post.category === category);
 
-	if (posts?.length) {
+			return json({
+				isSuccess: true,
+				posts: filteredPosts
+			});
+		} else {
+			return json({
+				isSuccess: true,
+				posts: await getPosts()
+			});
+		}
+	} catch (error) {
 		return json({
-			isSuccess: true,
-			posts: posts
+			isSuccess: false,
+			message: 'Error fetching posts',
+			error: error instanceof Error ? error.message : 'Unknown error'
 		});
 	}
-
-	return json({
-		isSuccess: false,
-		message: 'No posts found'
-	});
 }
 
 export async function POST({ request }) {
@@ -57,10 +74,25 @@ export async function POST({ request }) {
 
 		const fileName = `post-${crypto.randomUUID()}.md`;
 
+		// Dizin kontrolü ve oluşturma
+		await fs.mkdir(postsDir, { recursive: true });
+
+		// Dosyayı kaydet
 		await fs.writeFile(join(postsDir, fileName), res.html);
 
-		return json({ success: true, message: res });
+		return json({
+			success: true,
+			message: 'Post created successfully',
+			data: {
+				fileName,
+				category: res.category
+			}
+		});
 	} catch (error) {
-		throw error;
+		return json({
+			success: false,
+			message: 'Error creating post',
+			error: error instanceof Error ? error.message : 'Unknown error'
+		});
 	}
 }

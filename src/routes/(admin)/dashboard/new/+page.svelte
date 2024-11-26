@@ -27,6 +27,9 @@
 
 	// State variables
 	let title = $state('');
+	let category = $state('');
+
+	const categories = ['Technology', 'Travel', 'Food', 'Lifestyle', 'Personal', 'Other'];
 
 	let urlImageError = $state(false);
 	let urlImageLoaded = $state(false);
@@ -77,7 +80,9 @@
 	let date = new Date().toLocaleDateString('az-AZ', {
 		day: '2-digit',
 		month: '2-digit',
-		year: 'numeric'
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit'
 	});
 
 	onMount(() => {
@@ -237,6 +242,12 @@
 	};
 
 	const handleSave = async () => {
+		if (!category) {
+			alert('Bölmə seçin');
+
+			return;
+		}
+
 		const htmlString = getBlocksAsString();
 
 		const response = await fetch('/api/posts', {
@@ -251,11 +262,11 @@
 	};
 
 	const getBlocksAsString = () => {
-		// Template fonksiyonları
 		const titleTemplate = (titl: any) => `---
 title: '${title}' 
 date: '${new Date().toISOString().split('T')[0]}'
-published: true
+published: true,
+category: '${category}' 
 ---\n\n`;
 
 		const textBlockTemplate = (content: any) => `
@@ -325,8 +336,16 @@ ${
 	<!-- Header -->
 	<div class="mx-auto mb-10 mt-10 flex items-center justify-between pb-5 sm:max-w-[65ch]">
 		<p class="text-[15px] text-zinc-500">{date}</p>
-
 		<div class="flex items-center gap-3">
+			<select
+				bind:value={category}
+				class="cursor-pointer rounded-md border border-zinc-200 px-3 py-2 focus:border-blue-500 focus:outline-none"
+			>
+				<option value="">Bölmə</option>
+				{#each categories as cat}
+					<option value={cat}>{cat}</option>
+				{/each}
+			</select>
 			<button
 				type="button"
 				onclick={() => goto('/dashboard')}

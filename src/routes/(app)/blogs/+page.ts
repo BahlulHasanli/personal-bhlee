@@ -1,9 +1,7 @@
 export async function load() {
-	const res = await fetch('/api/posts');
+	const res = await fetch('http://localhost:5173/api/posts');
 
 	if (res.ok) {
-		return {
-			posts: await res.json()
-		};
+		return await res.json();
 	}
 }

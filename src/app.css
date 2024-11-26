@@ -1,66 +1,131 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+.zilla-slab-light {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 300;
+	font-style: normal;
+}
 
-.jetbrains-mono-bold {
-	font-family: 'JetBrains Mono', monospace;
+.zilla-slab-regular {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 400;
+	font-style: normal;
+}
+
+.zilla-slab-medium {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 500;
+	font-style: normal;
+}
+
+.zilla-slab-semibold {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 600;
+	font-style: normal;
+}
+
+.zilla-slab-bold {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 700;
+	font-style: normal;
+}
+
+.zilla-slab-light-italic {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 300;
+	font-style: italic;
+}
+
+.zilla-slab-regular-italic {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 400;
+	font-style: italic;
+}
+
+.zilla-slab-medium-italic {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 500;
+	font-style: italic;
+}
+
+.zilla-slab-semibold-italic {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 600;
+	font-style: italic;
+}
+
+.zilla-slab-bold-italic {
+	font-family: 'Zilla Slab', serif;
+	font-weight: 700;
+	font-style: italic;
+}
+
+.inter-mono-bold {
+	font-family: 'Inter', sans-serif;
 	font-optical-sizing: auto;
 	font-weight: 800;
 	font-style: normal;
 }
 
-.jetbrains-mono-semibold {
-	font-family: 'JetBrains Mono', monospace;
+.inter-mono-semibold {
+	font-family: 'Inter', sans-serif;
 	font-optical-sizing: auto;
 	font-weight: 600;
 	font-style: normal;
 }
 
-.jetbrains-mono-regular {
-	font-family: 'JetBrains Mono', monospace;
+.inter-mono-regular {
+	font-family: 'Inter', sans-serif;
 	font-optical-sizing: auto;
 	font-weight: 400;
 	font-style: normal;
 }
 
-.jetbrains-mono-light {
-	font-family: 'JetBrains Mono', monospace;
+.inter-mono-light {
+	font-family: 'Inter', sans-serif;
 	font-optical-sizing: auto;
 	font-weight: 100;
 	font-style: normal;
 }
 
-.jetbrains-mono-italic {
-	font-family: 'JetBrains Mono', monospace;
+.inter-mono-italic {
+	font-family: 'Inter', sans-serif;
 	font-optical-sizing: auto;
 	font-weight: 400;
 	font-style: italic;
 }
 
-.jetbrains-mono-bold-italic {
-	font-family: 'JetBrains Mono', monospace;
+.inter-mono-bold-italic {
+	font-family: 'Inter', sans-serif;
 	font-optical-sizing: auto;
 	font-weight: 800;
 	font-style: italic;
 }
 
-.jetbrains-mono-semibold-italic {
-	font-family: 'JetBrains Mono', monospace;
+.inter-mono-semibold-italic {
+	font-family: 'Inter', sans-serif;
 	font-optical-sizing: auto;
 	font-weight: 600;
 	font-style: italic;
 }
 
-.jetbrains-mono-light-italic {
-	font-family: 'JetBrains Mono', monospace;
+.inter-mono-light-italic {
+	font-family: 'Inter', sans-serif;
 	font-optical-sizing: auto;
 	font-weight: 100;
 	font-style: italic;
+}
+
+.inter-mono-medium {
+	font-family: 'Inter', serif;
+	font-weight: 500;
+	font-style: normal;
 }
 
 body {
-	font-family: 'JetBrains Mono', monospace;
+	font-family: 'Inter', sans-serif;
 	font-weight: 400;
 	font-style: normal;
 }
